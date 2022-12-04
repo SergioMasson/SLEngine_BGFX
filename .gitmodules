@@ -1,0 +1,12 @@
+[submodule "Dependencies/bgfx.cmake"]
+	path = Dependencies/bgfx.cmake
+	url = https://github.com/BabylonJS/bgfx.cmake.git
+[submodule "Dependencies/glfw"]
+	path = Dependencies/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "Dependencies/glslang"]
+	path = Dependencies/glslang
+	url = https://github.com/KhronosGroup/glslang.git
+[submodule "Dependencies/SPIRV-Cross"]
+	path = Dependencies/SPIRV-Cross
+	url = https://github.com/KhronosGroup/SPIRV-Cross.git
