@@ -3,13 +3,17 @@ cmake_minimum_required(VERSION 3.0.0)
 add_library(SLEngine)
 
 set(SLENGINE_SOURCES 
-    "Sources/GameCore.cpp")
+    "Sources/GameCore.cpp"
+    "Sources/Input.cpp")
 
 set(SLEGINE_HEADERS
-    "Include/SLEngine/GameCore.h")
+    "Include/SLEngine/GameCore.h"
+    "Include/SLEngine/Input.h"
+    "InternalInclude/SLEngine/Internal/Input.h")
 
 target_sources(SLEngine PRIVATE ${SLENGINE_SOURCES} ${SLEGINE_HEADERS})
 target_include_directories(SLEngine PUBLIC Include)
+target_include_directories(SLEngine PRIVATE InternalInclude)
 
 if(MSVC)
     target_compile_definitions(SLEngine PUBLIC SLENGINE_PLATFORM_WINDOWS)

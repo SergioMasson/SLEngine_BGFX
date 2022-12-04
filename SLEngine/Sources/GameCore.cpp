@@ -1,4 +1,5 @@
 #include "SLEngine/GameCore.h"
+#include "SLEngine/Internal/Input.h"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -37,28 +38,33 @@ namespace SLEngine
 	{
 		// GraphicsCore::Instance().Initialize();
 		// SystemTime::Initialize();
-		// Input::Initialize();
+		Input::Initialize(g_windows);
 		game.Startup();
 	}
 
 	void TerminateApplication(IGameApp& game)
 	{
 		game.Cleanup();
-		//Input::Shutdown();
+		Input::Shutdown();
 	}
 
 	bool UpdateApplication(IGameApp& game)
 	{
 		// float DeltaTime = GraphicsCore::Instance().GetFrameTime();
+		Input::Update(0.016f);
+		game.Update(0.016f);
 
-		// Input::Update(DeltaTime);
-		game.Update(0);
+		glfwPollEvents();
+
+		Input::PostUpdate();
 
 		// GraphicsCore::Instance().InitFrame();		
 		//GraphicsCore::Instance().Present();
 
-		return !game.IsDone();
+		return !game.IsDone() && !glfwWindowShouldClose(g_windows);
 	}
+
+
 
     void RunApplication(IGameApp& app, const char* className)
     {
@@ -78,10 +84,8 @@ namespace SLEngine
 
         InitializeApplication(app);
 
-        while (!glfwWindowShouldClose(g_windows))
+        while (UpdateApplication(app))
         {
-            UpdateApplication(app);
-            glfwPollEvents();
         }
 
         TerminateApplication(app);
