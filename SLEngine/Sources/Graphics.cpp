@@ -17,12 +17,14 @@
 #endif //
 #include <GLFW/glfw3native.h>
 
+#include "AppKit/AppKit.hpp"
+
 static void *glfwNativeWindowHandle(GLFWwindow *_window)
 {
 #if SLENGINE_PLATFORM_LINUX
     return (void *)(uintptr_t)glfwGetX11Window(_window);
 #elif SLENGINE_PLATFORM_OSX
-    return (void *)(uintptr_t)glfwGetCocoaMonitor();
+    return ((NS::Window*)glfwGetCocoaWindow(_window));
 #elif SLENGINE_PLATFORM_WINDOWS
     return glfwGetWin32Window(_window);
 #endif // TARGET_PLATFORM_
@@ -33,7 +35,7 @@ static void *glfwNativeDisplayHandle()
 #if SLENGINE_PLATFORM_LINUX
     return (void *)glfwGetX11Display();
 #elif SLENGINE_PLATFORM_OSX
-    return ((NSWindow *)glfwGetCocoaWindow(_window)).contentView;
+    return nullptr;
 #elif SLENGINE_PLATFORM_WINDOWS
     return nullptr;
 #endif // TARGET_PLATFORM_

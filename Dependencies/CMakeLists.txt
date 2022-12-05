@@ -128,3 +128,12 @@ if(TARGET spirv-cross-hlsl)
     set_property(TARGET spirv-cross-hlsl PROPERTY FOLDER Dependencies/SPIRV-Cross)
     disable_warnings(spirv-cross-hlsl)
 endif()
+
+# -------------------------------- metal-cpp --------------------------------
+
+if(GRAPHICS_API STREQUAL "Metal")
+    add_library(metal-cpp INTERFACE)
+    add_library(metal-cpp-extensions INTERFACE)
+    target_include_directories(metal-cpp INTERFACE metal-cpp)
+    target_include_directories(metal-cpp-extensions INTERFACE metal-cpp-extensions)
+endif()

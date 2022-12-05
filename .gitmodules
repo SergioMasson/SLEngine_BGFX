@@ -10,3 +10,6 @@
 [submodule "Dependencies/SPIRV-Cross"]
 	path = Dependencies/SPIRV-Cross
 	url = https://github.com/KhronosGroup/SPIRV-Cross.git
+[submodule "Dependencies/metal-cpp"]
+	path = Dependencies/metal-cpp
+	url = https://github.com/bkaradzic/metal-cpp.git

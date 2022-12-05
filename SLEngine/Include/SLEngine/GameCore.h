@@ -5,6 +5,7 @@ namespace SLEngine
 	class IGameApp
 	{
 	public:
+		virtual ~IGameApp() {};
 		// This function can be used to initialize application state and will run after essential
 		// hardware resources are allocated.  Some state that does not depend on these resources
 		// should still be initialized in the constructor such as pointers and flags.
