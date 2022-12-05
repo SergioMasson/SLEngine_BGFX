@@ -1,31 +1,9 @@
 #include "SLEngine/GameCore.h"
 #include "SLEngine/Internal/Input.h"
+#include "SLEngine/Internal/Graphics.h"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-
-#if SLENGINE_PLATFORM_LINUX
-#	define GLFW_EXPOSE_NATIVE_X11
-#	define GLFW_EXPOSE_NATIVE_GLX
-#elif SLENGINE_PLATFORM_OSX
-#	define GLFW_EXPOSE_NATIVE_COCOA
-#	define GLFW_EXPOSE_NATIVE_NSGL
-#elif SLENGINE_PLATFORM_WINDOWS
-#	define GLFW_EXPOSE_NATIVE_WIN32
-#	define GLFW_EXPOSE_NATIVE_WGL
-#endif //
-#include <GLFW/glfw3native.h>
-
-static void* glfwNativeWindowHandle(GLFWwindow* _window)
-{
-#if SLENGINE_PLATFORM_LINUX
-	return (void*)(uintptr_t)glfwGetX11Window(_window);
-#elif SLENGINE_PLATFORM_OSX
-	return ((NSWindow*)glfwGetCocoaWindow(_window)).contentView;
-#elif SLENGINE_PLATFORM_WINDOWS
-	return glfwGetWin32Window(_window);
-#endif // TARGET_PLATFORM_
-}
 
 #define INITIAL_WIDTH 256
 #define INITIAL_HEIGHT 256
@@ -39,6 +17,7 @@ namespace SLEngine
 		// GraphicsCore::Instance().Initialize();
 		// SystemTime::Initialize();
 		Input::Initialize(g_windows);
+		Graphics::Initialize(g_windows);
 		game.Startup();
 	}
 
@@ -46,6 +25,7 @@ namespace SLEngine
 	{
 		game.Cleanup();
 		Input::Shutdown();
+		Graphics::Shutdown();
 	}
 
 	bool UpdateApplication(IGameApp& game)
@@ -57,6 +37,7 @@ namespace SLEngine
 		glfwPollEvents();
 
 		Input::PostUpdate();
+		Graphics::Render();
 
 		// GraphicsCore::Instance().InitFrame();		
 		//GraphicsCore::Instance().Present();
@@ -69,7 +50,7 @@ namespace SLEngine
     void RunApplication(IGameApp& app, const char* className)
     {
         if (!glfwInit())
-		exit(EXIT_FAILURE);
+			return;
 
 	    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	    glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
@@ -79,7 +60,7 @@ namespace SLEngine
 	    if (!g_windows)
 	    {
 		    glfwTerminate();
-		    exit(EXIT_FAILURE);
+		    return;
 	    }
 
         InitializeApplication(app);
@@ -92,6 +73,6 @@ namespace SLEngine
 
         glfwDestroyWindow(g_windows);
         glfwTerminate();
-        exit(EXIT_SUCCESS);
+        return;
     }
 }

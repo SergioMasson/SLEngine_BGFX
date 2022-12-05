@@ -4,12 +4,14 @@ add_library(SLEngine)
 
 set(SLENGINE_SOURCES 
     "Sources/GameCore.cpp"
-    "Sources/Input.cpp")
+    "Sources/Input.cpp"
+    "Sources/Graphics.cpp")
 
 set(SLEGINE_HEADERS
     "Include/SLEngine/GameCore.h"
     "Include/SLEngine/Input.h"
-    "InternalInclude/SLEngine/Internal/Input.h")
+    "InternalInclude/SLEngine/Internal/Input.h"
+    "InternalInclude/SLEngine/Internal/Graphics.h")
 
 target_sources(SLEngine PRIVATE ${SLENGINE_SOURCES} ${SLEGINE_HEADERS})
 target_include_directories(SLEngine PUBLIC Include)
