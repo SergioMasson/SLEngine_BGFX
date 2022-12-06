@@ -83,7 +83,5 @@
         "xtr1common": "cpp",
         "xtree": "cpp",
         "xutility": "cpp"
-    },
-
-    "cmake.generator": "Xcode"
+    }
 }
