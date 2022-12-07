@@ -4,11 +4,11 @@
 
 #include <iostream>
 
-SLEngine::DebugGUIFloat* g_floatValue;
+SLEngine::DebugGUIFloat g_floatValue;
 
 void RobotsGame::Startup() 
 {
-    g_floatValue = SLEngine::DebugGUI::CreateGUIFloat(1.0f, "DEBUG GUI TEST");
+    g_floatValue = SLEngine::DebugGUI::CreateGUIFloat(1.0f, "DEBUG GUI TEST", SLEngine::FloatWidget::Drag);
 }
 
 bool RobotsGame::IsDone()
@@ -18,13 +18,13 @@ bool RobotsGame::IsDone()
 
 void RobotsGame::Update(float deltaT)
 {
-    if (SLEngine::Input::IsPressed(SLEngine::Input::KeyCode::Key_0))
+    if (SLEngine::Input::IsPressed(SLEngine::Input::KeyCode::Key_p))
     {
-        std::cout << "DEBUG GUI TEST: " << g_floatValue->value << std::endl;
+        std::cout << "DEBUG GUI TEST: " << (float)g_floatValue << std::endl;
     }
-    else if (SLEngine::Input::IsPressed(SLEngine::Input::KeyCode::Key_1))
+    else if (SLEngine::Input::IsPressed(SLEngine::Input::KeyCode::Key_r))
     {
-        std::cout << "1 pressed" << std::endl;
+        g_floatValue.Set(0.0f);
     }
 }
 

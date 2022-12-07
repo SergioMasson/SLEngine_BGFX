@@ -22,9 +22,12 @@ namespace SLEngine
 
         struct DebugGUIFloatData
         {
-            DebugGUIFloat value;
+            float value;
             std::string message;
             uint32_t handler;
+            FloatWidget widget;
+            float maxSlider;
+            float minSlider;
         };
 
         std::array<DebugGUIFloatData, 256> g_guiFloats;
@@ -49,6 +52,22 @@ namespace SLEngine
             ImGui_ImplBGFX_Init(width , height);
 
             std::memset((void*)&g_guiFloats[0], 0, sizeof(DebugGUIFloatData) * g_guiFloats.size());
+        }
+
+        void DrawFloatInput(DebugGUIFloatData& floatGUI)
+        {
+            if(floatGUI.widget == FloatWidget::InputField)
+            {
+                ImGui::InputFloat(floatGUI.message.c_str(), &floatGUI.value);
+            }
+            else if(floatGUI.widget == FloatWidget::Slider)
+            {
+                ImGui::SliderFloat(floatGUI.message.c_str(), &floatGUI.value, floatGUI.minSlider, floatGUI.maxSlider);
+            }
+            else if(floatGUI.widget == FloatWidget::Drag)
+            {
+                ImGui::DragFloat(floatGUI.message.c_str(), &floatGUI.value, floatGUI.minSlider, floatGUI.maxSlider);
+            }
         }
 
         void Draw()
@@ -81,7 +100,7 @@ namespace SLEngine
             for (auto& guiFloat : g_guiFloats)
             {
                 if(guiFloat.handler != 0)
-                    ImGui::InputFloat(guiFloat.message.c_str(), &guiFloat.value.value);
+                    DrawFloatInput(guiFloat);
             }
 
             ImGui::End();
@@ -97,24 +116,27 @@ namespace SLEngine
             ImGui_ImplGlfw_Shutdown();
         } 
         
-        DebugGUIFloat* CreateGUIFloat(float value, std::string text)
+        DebugGUIFloat CreateGUIFloat(float value, std::string text, FloatWidget widget, float sliderMin, float sliderMax)
         {
             for (size_t i = 0; i < g_guiFloats.size(); i++)
             {
                 if (g_guiFloats[i].handler == 0)
                 {
                     g_guiFloats[i] = DebugGUIFloatData{};
-                    g_guiFloats[i].value.value = value;
+                    g_guiFloats[i].value = value;
                     g_guiFloats[i].message = text;
                     g_guiFloats[i].handler = 1;
+                    g_guiFloats[i].widget = widget;
+                    g_guiFloats[i].minSlider = sliderMin;
+                    g_guiFloats[i].maxSlider = sliderMax;
 
-                    return &g_guiFloats[i].value;
+                    return DebugGUIFloat{&g_guiFloats[i].value};
                 }
             }
 
             SLENGINE_ERROR("More than 256 DebugGUIFloat created.");
 
-            return nullptr;
+            return DebugGUIFloat{};
         }
 
         void DeleteGUIFloat(DebugGUIFloat& debugFloat)
