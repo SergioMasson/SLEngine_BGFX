@@ -6,12 +6,15 @@ set(SLENGINE_SOURCES
     "Sources/GameCore.cpp"
     "Sources/Input.cpp"
     "Sources/Graphics.cpp"
-    "Sources/Debug.cpp")
+    "Sources/Debug.cpp"
+    "Sources/DebugGUI.cpp")
 
 set(SLEGINE_HEADERS
     "Include/SLEngine/GameCore.h"
     "Include/SLEngine/Input.h"
     "Include/SLEngine/Debug.h"
+    "Include/SLEngine/DebugGUI.h"
+    "InternalInclude/SLEngine/Internal/DebugGUI.h"
     "InternalInclude/SLEngine/Internal/Input.h"
     "InternalInclude/SLEngine/Internal/Graphics.h")
 
@@ -28,7 +31,7 @@ else()
     target_compile_definitions(SLEngine PUBLIC SLENGINE_PLATFORM_LINUX)
 endif()
 
-target_link_to_dependencies(SLEngine PRIVATE glfw bgfx bimg glslang SPIRV bx)
+target_link_to_dependencies(SLEngine PRIVATE glfw bgfx bimg glslang SPIRV bx imgui)
 
 if(GRAPHICS_API STREQUAL "Metal")
     target_link_to_dependencies(SLEngine PRIVATE metal-cpp metal-cpp-extensions)

@@ -1,5 +1,6 @@
 #include "SLEngine/Internal/Graphics.h"
 #include "SLEngine/Debug.h"
+#include "SLEngine/Internal/DebugGUI.h"
 
 #include "bgfx/bgfx.h"
 
@@ -103,6 +104,7 @@ namespace SLEngine
 			bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
 
 			glfwSetWindowSizeCallback(window, window_size_callback);
+			DebugGUI::Initialize(window);
 		}
 
 		void Render()
@@ -127,6 +129,8 @@ namespace SLEngine
 				, stats->textHeight
 			);
 
+			DebugGUI::Draw();
+
 			// Advance to next frame. Rendering thread will be kicked to
 			// process submitted rendering primitives.
 			bgfx::frame();
@@ -136,6 +140,7 @@ namespace SLEngine
 		{
 			// Shutdown bgfx.
 			bgfx::shutdown();
+			DebugGUI::Shutdown();
 		}
 	}
 }

@@ -137,3 +137,7 @@ if(GRAPHICS_API STREQUAL "Metal")
     target_include_directories(metal-cpp INTERFACE metal-cpp)
     target_include_directories(metal-cpp-extensions INTERFACE metal-cpp-extensions)
 endif()
+
+# -------------------------------- imgui ------------------------------------
+
+add_subdirectory(imgui)
