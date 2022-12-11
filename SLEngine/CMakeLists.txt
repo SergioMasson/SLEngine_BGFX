@@ -7,14 +7,23 @@ set(SLENGINE_SOURCES
     "Sources/Input.cpp"
     "Sources/Graphics.cpp"
     "Sources/Debug.cpp"
-    "Sources/DebugGUI.cpp")
+    "Sources/DebugGUI.cpp"
+    "Sources/IndexBuffer.cpp"
+    "Sources/VertexBuffer.cpp"
+    "Sources/VertexArray.cpp"
+    "Sources/UniformBuffer.cpp")
 
 set(SLEGINE_HEADERS
     "Include/SLEngine/GameCore.h"
     "Include/SLEngine/Input.h"
     "Include/SLEngine/Debug.h"
     "Include/SLEngine/DebugGUI.h"
+    "Include/SLEngine/MeshRenderer.h"
     "InternalInclude/SLEngine/Internal/DebugGUI.h"
+    "InternalInclude/SLEngine/Internal/IndexBuffer.h"
+    "InternalInclude/SLEngine/Internal/VertexBuffer.h"
+    "InternalInclude/SLEngine/Internal/VertexArray.h"
+    "InternalInclude/SLEngine/Internal/UniformBuffer.h"
     "InternalInclude/SLEngine/Internal/Input.h"
     "InternalInclude/SLEngine/Internal/Graphics.h")
 
