@@ -17,8 +17,8 @@ namespace SLEngine
     namespace DebugGUI
     {
         bool show_ball = true;
-	    bool show_floor = true;
-	    ImVec4 ballColor = ImVec4(0.55f, 0.55f, 0.55f, 1.00f);
+        bool show_floor = true;
+        ImVec4 ballColor = ImVec4(0.55f, 0.55f, 0.55f, 1.00f);
 
         struct DebugGUIFloatData
         {
@@ -32,90 +32,102 @@ namespace SLEngine
 
         std::array<DebugGUIFloatData, 256> g_guiFloats;
 
-        void Initialize(GLFWwindow* window)
+        void Initialize(GLFWwindow *window)
         {
             // Setup Dear ImGui context
-	        IMGUI_CHECKVERSION();
-	        ImGui::CreateContext();
-	        ImGuiIO &io = ImGui::GetIO();
-	        (void)io;
-	        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO &io = ImGui::GetIO();
+            (void)io;
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-	        ImGui::StyleColorsDark();
+            ImGui::StyleColorsDark();
 
-	        // Setup Platform/Renderer backends
-	        ImGui_ImplGlfw_InitForOther(window, true);
+            // Setup Platform/Renderer backends
+            ImGui_ImplGlfw_InitForOther(window, true);
 
             int width, height;
-			glfwGetWindowSize(window, &width, &height);
-            ImGui_ImplBGFX_Init(width , height);
+            glfwGetWindowSize(window, &width, &height);
+            ImGui_ImplBGFX_Init(width, height);
 
-            std::memset((void*)&g_guiFloats[0], 0, sizeof(DebugGUIFloatData) * g_guiFloats.size());
+            std::memset((void *)&g_guiFloats[0], 0, sizeof(DebugGUIFloatData) * g_guiFloats.size());
         }
 
-        void DrawFloatInput(DebugGUIFloatData& floatGUI)
+        void DrawFloatInput(DebugGUIFloatData &floatGUI)
         {
-            if(floatGUI.widget == FloatWidget::InputField)
+            if (floatGUI.widget == FloatWidget::InputField)
             {
                 ImGui::InputFloat(floatGUI.message.c_str(), &floatGUI.value);
             }
-            else if(floatGUI.widget == FloatWidget::Slider)
+            else if (floatGUI.widget == FloatWidget::Slider)
             {
                 ImGui::SliderFloat(floatGUI.message.c_str(), &floatGUI.value, floatGUI.minSlider, floatGUI.maxSlider);
             }
-            else if(floatGUI.widget == FloatWidget::Drag)
+            else if (floatGUI.widget == FloatWidget::Drag)
             {
                 ImGui::DragFloat(floatGUI.message.c_str(), &floatGUI.value, floatGUI.minSlider, floatGUI.maxSlider);
             }
         }
 
+        float g_menuWidth = 250;
+
+        void DrawLeftMenu(ImGuiViewport *viewport)
+        {
+            ImGui::SetNextWindowPos(viewport->Pos);
+            ImGui::SetNextWindowSize(ImVec2(g_menuWidth, viewport->Size.y));
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+            flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+            if (ImGui::Begin("DockSpace Demo", 0, flags))
+            {
+                ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable;
+                
+
+                if (ImGui::CollapsingHeader("Engine Data"))
+                {
+                    ImGui::Text("Frame time: %.3f ms (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                }
+
+                if (ImGui::CollapsingHeader("Game Data"))
+                {
+                    for (auto &guiFloat : g_guiFloats)
+                    {
+                        if (guiFloat.handler != 0)
+                            DrawFloatInput(guiFloat);
+                    }
+                }
+
+                g_menuWidth = ImGui::GetWindowWidth();
+
+                ImGui::End();
+            }
+
+            ImGui::PopStyleVar();
+        }
+
         void Draw()
         {
             // Start the Dear ImGui frame
-		    ImGui_ImplBGFX_NewFrame();
-		    ImGui_ImplGlfw_NewFrame();
+            ImGui_ImplBGFX_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
 
             ImGui::NewFrame();
 
-			static float ballSize = 1.0f;
+            ImGuiViewport *viewport = ImGui::GetMainViewport();
+            DrawLeftMenu(viewport);
 
-			ImGui::Begin("Scene Editor Example");
-
-			ImGui::Text("Use this controllers to change values in the Babylon scene.");
-
-            ImGui::Checkbox("Show ball", &show_ball);
-            ImGui::Checkbox("Show floor", &show_floor);
-            ImGui::SliderFloat("Ball Size", &ballSize, 1.0f, 10.0f);
-            ImGui::ColorEdit3("Ball Color", (float *)&ballColor);
-            ImGui::Button("Resume");
-
-			ImGui::SameLine();
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
-
-            ImGui::Begin("Game Debug");
-
-            for (auto& guiFloat : g_guiFloats)
-            {
-                if(guiFloat.handler != 0)
-                    DrawFloatInput(guiFloat);
-            }
-
-            ImGui::End();
-            
-
-			ImGui::Render();
-			ImGui_ImplBGFX_RenderDrawData(ImGui::GetDrawData());
+            ImGui::Render();
+            ImGui_ImplBGFX_RenderDrawData(ImGui::GetDrawData());
         }
-        
+
         void Shutdown()
         {
             ImGui_ImplBGFX_Shutdown();
             ImGui_ImplGlfw_Shutdown();
-        } 
-        
+        }
+
         DebugGUIFloat CreateGUIFloat(float value, std::string text, FloatWidget widget, float sliderMin, float sliderMax)
         {
             for (size_t i = 0; i < g_guiFloats.size(); i++)
@@ -139,9 +151,8 @@ namespace SLEngine
             return DebugGUIFloat{};
         }
 
-        void DeleteGUIFloat(DebugGUIFloat& debugFloat)
+        void DeleteGUIFloat(DebugGUIFloat &debugFloat)
         {
-
         }
     }
 }
